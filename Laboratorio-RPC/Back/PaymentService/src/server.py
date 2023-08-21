@@ -5,13 +5,13 @@ import grpc
 import Service_pb2
 import Service_pb2_grpc
 
-HOST = '[::]:8080'
+HOST = '[::]:50051'
 
 class ProductService(Service_pb2_grpc.ProductServiceServicer):
    
    def AddProduct(self, request, context):
       print("Request is received: " + str(request))
-      return Service_pb2.TransactionResponse(status_code=1)
+      return Service_pb2.TransactionResponse(status_code=200)
  
 def serve():
   server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
