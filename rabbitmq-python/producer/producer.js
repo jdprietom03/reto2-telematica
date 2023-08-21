@@ -1,4 +1,5 @@
 const dotenv = require('dotenv')
+const amqp = require('amqplib/callback_api');
 
 dotenv.config()
 
@@ -7,7 +8,6 @@ const RMQ_USER = process.env.RMQ_USER;
 const RMQ_PASS = process.env.RMQ_PASS;
 const RMQ_EXCHANGE = process.env.RMQ_EXCHANGE;
 
-var amqp = require('amqplib/callback_api');
 
 amqp.connect(`amqp://${RMQ_USER}:${RMQ_PASS}@${RMQ_HOST}`, function(error0, connection) {
     if (error0) {
@@ -18,7 +18,6 @@ amqp.connect(`amqp://${RMQ_USER}:${RMQ_PASS}@${RMQ_HOST}`, function(error0, conn
             throw error1;
         }
 
-        var queue = 'my_app';
         var msg = 'DA DA DATA!';
 
         channel.assertExchange(RMQ_EXCHANGE, "direct", {
