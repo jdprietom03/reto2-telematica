@@ -7,8 +7,17 @@ const RMQ_HOST = process.env.RMQ_HOST;
 const RMQ_USER = process.env.RMQ_USER;
 const RMQ_PASS = process.env.RMQ_PASS;
 const RMQ_EXCHANGE = process.env.RMQ_EXCHANGE;
+const RMQ_PORT = process.env.RMQ_PORT;
 
-amqp.connect(`amqp://${RMQ_USER}:${RMQ_PASS}@${RMQ_HOST}`, (err, conn) => {
+const connectionProperties = {
+  username: RMQ_USER,
+  password: RMQ_PASS,
+  port: RMQ_PORT,
+  hostname: RMQ_HOST,
+  vhost: '/',
+};
+
+amqp.connect(connectionProperties, (err, conn) => {
   if (err) {
     console.error(`Failed to connect to RabbitMQ: ${err}`);
     return;
@@ -22,8 +31,8 @@ amqp.connect(`amqp://${RMQ_USER}:${RMQ_PASS}@${RMQ_HOST}`, (err, conn) => {
 
     const msg = 'Hello, world!';
 
-    channel.assertExchange(RMQ_EXCHANGE, {
-      durable:  false
+    channel.assertExchange(RMQ_EXCHANGE, "direct", {
+      durable:  true
     });
 
     channel.publish(RMQ_EXCHANGE, "", Buffer.from(msg));
