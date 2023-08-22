@@ -23,9 +23,11 @@ const publish = (conn, request, response) => {
             durable: true
         });
 
-        channel.publish(context.RMQ_EXCHANGE, "", Buffer.from(msg));
+        const isPublished = channel.publish(context.RMQ_EXCHANGE, "", Buffer.from(msg));
 
-        response.send(" [x] Sent: " + msg);
-        conn.close();
+        if (isPublished) {
+            response.send(" [x] Sent: " + msg);
+            setTimeout( () => conn.close(), 100);
+        }
     });
 }
