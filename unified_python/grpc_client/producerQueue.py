@@ -15,7 +15,7 @@ def RunAMQP(body):
     connection = pika.BlockingConnection(pika.ConnectionParameters(RMQ_HOST, RMQ_PORT, '/', pika.PlainCredentials(RMQ_USER, RMQ_PASS)))
     channel = connection.channel()
 
-    channel.queue_declare(queue=RMQ_QUEUE)
+    channel.queue_declare(queue=RMQ_QUEUE, durable=True)
     channel.basic_publish(exchange=RMQ_EXCHANGE, routing_key='', body=body)
 
     connection.close()
