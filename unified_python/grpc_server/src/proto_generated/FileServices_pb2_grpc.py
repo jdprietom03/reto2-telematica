@@ -3,6 +3,7 @@
 import grpc
 
 import FileServices_pb2 as FileServices__pb2
+from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
 
 
 class FileServicesStub(object):
@@ -16,7 +17,7 @@ class FileServicesStub(object):
         """
         self.ListFiles = channel.unary_unary(
                 '/FileServices/ListFiles',
-                request_serializer=FileServices__pb2.FileInfo.SerializeToString,
+                request_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
                 response_deserializer=FileServices__pb2.ListFilesResponse.FromString,
                 )
         self.FindFile = channel.unary_unary(
@@ -46,7 +47,7 @@ def add_FileServicesServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'ListFiles': grpc.unary_unary_rpc_method_handler(
                     servicer.ListFiles,
-                    request_deserializer=FileServices__pb2.FileInfo.FromString,
+                    request_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                     response_serializer=FileServices__pb2.ListFilesResponse.SerializeToString,
             ),
             'FindFile': grpc.unary_unary_rpc_method_handler(
@@ -76,7 +77,7 @@ class FileServices(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/FileServices/ListFiles',
-            FileServices__pb2.FileInfo.SerializeToString,
+            google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             FileServices__pb2.ListFilesResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
