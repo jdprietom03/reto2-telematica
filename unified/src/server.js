@@ -1,4 +1,5 @@
 import express from "express";
+import multer from "multer";
 import { context } from "./context.js";
 import { Run as RungRPC } from "./grpc-run.js";
 import { Run as RunAMQP } from "./amqp-run.js";
@@ -14,6 +15,10 @@ app.get('/amqp', (request, response) => {
 });
 
 app.get('/grpc', (request, response) => {
+	RungRPC(request, response);
+});
+
+app.post('/grpc', multer().any(), (request, response) => {
 	RungRPC(request, response);
 });
 

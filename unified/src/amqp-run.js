@@ -17,7 +17,9 @@ const publish = (conn, request, response) => {
             throw err;
         }
 
-        const msg = 'DA DA DATA!';
+        const { body, params, query, files } = request;
+
+        const msg = JSON.stringify({ body, params, query, files });
 
         channel.assertExchange(context.RMQ_EXCHANGE, context.RMQ_TYPE, {
             durable: true
