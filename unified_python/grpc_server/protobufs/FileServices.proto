@@ -15,7 +15,7 @@ message FindFileRequest {
 }
   
 message FindFileResponse {
-    FileInfo file_info = 1;
+    repeated FileInfo files_info = 1;
 }
 
 service FileServices{

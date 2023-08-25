@@ -36,15 +36,18 @@ class FilesFindResource(Resource):
 
         findFileReq = FindFileRequest(file_name=name)
 
+        response = []
+
         try:
-            file = grpc_client.stub.FindFile(findFileReq).file_info
+            files = grpc_client.stub.FindFile(findFileReq).files_info
         except grpc.RpcError as e:
             return RunAMQP(name)
 
-        response = {
-            "name": file.name,
-            "size": file.size,
-            "timestamp": file.timestamp
-        }
+        for file in files:
+            response.append({
+                "name": file.name,
+                "size": file.size,
+                "timestamp": file.timestamp
+            })
 
         return make_response(json.dumps(response), 200, headers)
