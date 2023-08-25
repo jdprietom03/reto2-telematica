@@ -1,5 +1,5 @@
 syntax = "proto3";
-
+import "google/protobuf/empty.proto";
 message FileInfo {
     string name = 1;
     int64 size = 2;
@@ -19,6 +19,6 @@ message FindFileResponse {
 }
 
 service FileServices{
-    rpc ListFiles(FileInfo) returns (ListFilesResponse) {}
+    rpc ListFiles(google.protobuf.Empty) returns (ListFilesResponse) {}
     rpc FindFile(FindFileRequest) returns (FindFileResponse);
 }

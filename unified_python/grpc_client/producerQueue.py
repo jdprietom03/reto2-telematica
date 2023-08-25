@@ -11,7 +11,7 @@ RMQ_EXCHANGE = os.getenv('RMQ_EXCHANGE')
 RMQ_QUEUE = os.getenv('RMQ_QUEUE')
 
 
-async def RunAMQP(body):
+def RunAMQP(body):
     connection = pika.BlockingConnection(pika.ConnectionParameters(RMQ_HOST, RMQ_PORT, '/', pika.PlainCredentials(RMQ_USER, RMQ_PASS)))
     channel = connection.channel()
 
