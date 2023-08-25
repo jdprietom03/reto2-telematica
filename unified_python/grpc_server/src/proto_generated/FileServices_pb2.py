@@ -14,7 +14,7 @@ _sym_db = _symbol_database.Default()
 from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x12\x46ileServices.proto\x1a\x1bgoogle/protobuf/empty.proto\"9\n\x08\x46ileInfo\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0c\n\x04size\x18\x02 \x01(\x03\x12\x11\n\ttimestamp\x18\x03 \x01(\t\"1\n\x11ListFilesResponse\x12\x1c\n\tfile_info\x18\x01 \x03(\x0b\x32\t.FileInfo\"$\n\x0f\x46indFileRequest\x12\x11\n\tfile_name\x18\x01 \x01(\t\"0\n\x10\x46indFileResponse\x12\x1c\n\tfile_info\x18\x01 \x01(\x0b\x32\t.FileInfo2z\n\x0c\x46ileServices\x12\x39\n\tListFiles\x12\x16.google.protobuf.Empty\x1a\x12.ListFilesResponse\"\x00\x12/\n\x08\x46indFile\x12\x10.FindFileRequest\x1a\x11.FindFileResponseb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x12\x46ileServices.proto\x1a\x1bgoogle/protobuf/empty.proto\"9\n\x08\x46ileInfo\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0c\n\x04size\x18\x02 \x01(\x03\x12\x11\n\ttimestamp\x18\x03 \x01(\t\"1\n\x11ListFilesResponse\x12\x1c\n\tfile_info\x18\x01 \x03(\x0b\x32\t.FileInfo\"$\n\x0f\x46indFileRequest\x12\x11\n\tfile_name\x18\x01 \x01(\t\"1\n\x10\x46indFileResponse\x12\x1d\n\nfiles_info\x18\x01 \x03(\x0b\x32\t.FileInfo2z\n\x0c\x46ileServices\x12\x39\n\tListFiles\x12\x16.google.protobuf.Empty\x1a\x12.ListFilesResponse\"\x00\x12/\n\x08\x46indFile\x12\x10.FindFileRequest\x1a\x11.FindFileResponseb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -29,7 +29,7 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _globals['_FINDFILEREQUEST']._serialized_start=161
   _globals['_FINDFILEREQUEST']._serialized_end=197
   _globals['_FINDFILERESPONSE']._serialized_start=199
-  _globals['_FINDFILERESPONSE']._serialized_end=247
-  _globals['_FILESERVICES']._serialized_start=249
-  _globals['_FILESERVICES']._serialized_end=371
+  _globals['_FINDFILERESPONSE']._serialized_end=248
+  _globals['_FILESERVICES']._serialized_start=250
+  _globals['_FILESERVICES']._serialized_end=372
 # @@protoc_insertion_point(module_scope)

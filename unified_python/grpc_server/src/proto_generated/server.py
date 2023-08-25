@@ -4,6 +4,7 @@ import datetime
 import grpc
 import FileServices_pb2 as FileServices_pb2
 import FileServices_pb2_grpc as FileServices_pb2_grpc
+import glob
 
 HOST = '[::]:50051'
 
@@ -36,26 +37,26 @@ class FileService(FileServices_pb2_grpc.FileServicesServicer):
     def FindFile(self, request, context):
         print("Request Find Files is received: " + str(request))
 
-        file_info = None
-        name = request.file_name
+        files_info = []
+        search = request.file_name
 
-        for filename in os.listdir(dir):
+        for filename in glob.glob(f"{dir}/{search}"):
             file_path = os.path.join(dir, filename)
-            if filename == name:
-                size = os.path.getsize(file_path)
-                time = os.path.getmtime(file_path)
-                timestamp = datetime.datetime.fromtimestamp(time)
-                formatted_date = timestamp.strftime("%Y-%m-%d %H:%M:%S")
-            
-                file_info = FileServices_pb2.FileInfo(
-                    name = name,
-                    size = size,
-                    timestamp = formatted_date
-                )  
+            size = os.path.getsize(file_path)
+            time = os.path.getmtime(file_path)
+            timestamp = datetime.datetime.fromtimestamp(time)
+            formatted_date = timestamp.strftime("%Y-%m-%d %H:%M:%S")
+        
+            file_info = FileServices_pb2.FileInfo(
+                name = os.path.basename(file_path),
+                size = size,
+                timestamp = formatted_date
+            )  
 
-                break
+            files_info.append(file_info)
 
-        response = FileServices_pb2.FindFileResponse(file_info=file_info)
+
+        response = FileServices_pb2.FindFileResponse(files_info=files_info)
 
         return response
 
