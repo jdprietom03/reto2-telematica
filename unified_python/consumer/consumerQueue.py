@@ -13,6 +13,8 @@ RMQ_PORT = os.getenv('RMQ_PORT')
 RMQ_USER = os.getenv('RMQ_USER')
 RMQ_PASS = os.getenv('RMQ_PASS')
 
+dir = "./assets"
+
 connection = pika.BlockingConnection(pika.ConnectionParameters(RMQ_HOST, RMQ_PORT, '/', pika.PlainCredentials(RMQ_USER, RMQ_PASS)))
 channel = connection.channel()
 
