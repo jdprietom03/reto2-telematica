@@ -4,6 +4,7 @@
 
 import pika
 import os
+import datetime
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -16,7 +17,25 @@ connection = pika.BlockingConnection(pika.ConnectionParameters(RMQ_HOST, RMQ_POR
 channel = connection.channel()
 
 def callback(ch, method, properties, body):
-    print(f'{body} is received')
+    response = []
+
+    for file_name in os.listdir(dir):
+        file_info = {}
+        file_info["name"] = file_name
+        file_path = os.path.join(dir, file_name)
+
+        if os.path.isfile(file_path):
+            size = os.path.getsize(file_path)
+            time = os.path.getmtime(file_path)
+            timestamp = datetime.datetime.fromtimestamp(time)
+            formatted_date = timestamp.strftime("%Y-%m-%d %H:%M:%S")
+
+            file_info["size"] = size
+            file_info["timestamp"] = formatted_date
+
+            response.append(file_info)
+
+    print(f'The response is : {response}')
     
 channel.basic_consume(queue="my_app", on_message_callback=callback, auto_ack=True)
 channel.start_consuming()
