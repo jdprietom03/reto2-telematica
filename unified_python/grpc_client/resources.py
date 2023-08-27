@@ -25,7 +25,7 @@ class FilesListResource(Resource):
 
                 response.append(serialized)
         except:
-            return RunAMQP("", function="list")
+            response = RunAMQP("", function="list")
 
         return make_response(json.dumps(response), 200, headers)
 
@@ -41,7 +41,7 @@ class FilesFindResource(Resource):
         try:
             files = grpc_client.stub.FindFile(findFileReq).files_info
         except grpc.RpcError as e:
-            return RunAMQP(name, function="find")
+            return make_response(json.dumps(RunAMQP(name, function="find")), 200, headers)
 
         for file in files:
             response.append({

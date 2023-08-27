@@ -50,10 +50,10 @@ class AMQPRpcClient(object):
                 correlation_id=self.corr_id,
             ),
             body=body)
-        self.connection.process_data_events()
+        self.connection.process_data_events(time_limit=None)
         return self.response
 
 def RunAMQP(body, function=""):
     rpc_client = AMQPRpcClient(function)
     response = rpc_client.call(body)
-    return response
+    return response.decode("utf-8")
