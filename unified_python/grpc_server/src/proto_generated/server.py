@@ -8,8 +8,7 @@ import glob
 
 HOST = '[::]:50051'
 
-dir = "./../assets"
-
+dir = "./../../../assets"
 
 class FileService(FileServices_pb2_grpc.FileServicesServicer):
 
