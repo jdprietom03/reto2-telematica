@@ -25,7 +25,7 @@ class FilesListResource(Resource):
 
                 response.append(serialized)
         except:
-            return RunAMQP(None, function="list")
+            return RunAMQP("", function="list")
 
         return make_response(json.dumps(response), 200, headers)
 

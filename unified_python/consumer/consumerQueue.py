@@ -63,6 +63,10 @@ def find_files(ch, method, properties, body):
     publish_response(ch, method, properties, response)
 
 def publish_response(ch, method, properties, response):
+    print("properties:", properties)
+    print("Reply_to:", properties.reply_to)
+    print("Corr_id:", properties.correlation_id)
+
     channel.basic_publish(
         exchange='',
         routing_key=properties.reply_to,
@@ -71,8 +75,8 @@ def publish_response(ch, method, properties, response):
         ),
         body=json.dumps(response)
     )
-
     ch.basic_ack(delivery_tag=method.delivery_tag)
+    print("Response sent to RabbitMQ!")
     
 channel.basic_consume(queue="list_queue", on_message_callback=list_files, auto_ack=False)
 channel.basic_consume(queue="find_queue", on_message_callback=find_files, auto_ack=False)
