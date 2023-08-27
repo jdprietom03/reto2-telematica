@@ -48,7 +48,7 @@ def find_files(ch, method, properties, body):
     search = body.decode('utf-8')
     for filename in glob.glob(f"{dir}/{search}"):
         file_info = {}
-        file_info["name"] = filename
+        file_info["name"] = os.path.basename(filename)
         size = os.path.getsize(filename)
         time = os.path.getmtime(filename)
         timestamp = datetime.datetime.fromtimestamp(time)
