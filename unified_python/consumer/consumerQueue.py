@@ -45,22 +45,19 @@ def list_files(ch, method, properties, body):
 def find_files(ch, method, properties, body):
     response = []
 
-    search = body.encode('UTF8')
+    search = body.decode('utf-8')
     for filename in glob.glob(f"{dir}/{search}"):
         file_info = {}
         file_info["name"] = filename
-        file_path = os.path.join(dir, filename)
+        size = os.path.getsize(filename)
+        time = os.path.getmtime(filename)
+        timestamp = datetime.datetime.fromtimestamp(time)
+        formatted_date = timestamp.strftime("%Y-%m-%d %H:%M:%S")
+    
+        file_info["size"] = size
+        file_info["timestamp"] = formatted_date
 
-        if os.path.isfile(file_path):
-            size = os.path.getsize(file_path)
-            time = os.path.getmtime(file_path)
-            timestamp = datetime.datetime.fromtimestamp(time)
-            formatted_date = timestamp.strftime("%Y-%m-%d %H:%M:%S")
-        
-            file_info["size"] = size
-            file_info["timestamp"] = formatted_date
-
-            response.append(file_info)
+        response.append(file_info)
 
     print(f'The response in FIND is : {response}')
     publish_response(ch, method, properties, response)
