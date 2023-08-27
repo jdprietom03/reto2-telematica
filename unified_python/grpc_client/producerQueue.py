@@ -1,3 +1,4 @@
+import json
 import pika
 from dotenv import load_dotenv
 import os
@@ -56,4 +57,4 @@ class AMQPRpcClient(object):
 def RunAMQP(body, function=""):
     rpc_client = AMQPRpcClient(function)
     response = rpc_client.call(body)
-    return response.decode("utf-8")
+    return json.loads(response.decode("utf-8"))
