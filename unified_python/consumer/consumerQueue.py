@@ -2,6 +2,7 @@
 # consumer.py
 # Consume RabbitMQ queue
 
+import json
 import pika
 import os
 import datetime
@@ -18,7 +19,7 @@ dir = "./assets"
 connection = pika.BlockingConnection(pika.ConnectionParameters(RMQ_HOST, RMQ_PORT, '/', pika.PlainCredentials(RMQ_USER, RMQ_PASS)))
 channel = connection.channel()
 
-def callback(ch, method, properties, body):
+def list_files(ch, method, properties, body):
     response = []
 
     for file_name in os.listdir(dir):
@@ -38,6 +39,52 @@ def callback(ch, method, properties, body):
             response.append(file_info)
 
     print(f'The response is : {response}')
+    publish_response(ch, method, properties, response)
+
+def find_files(ch, method, properties, body):
+    response = []
+
+    for file_name in os.listdir(dir):
+        file_info = {}
+        file_info["name"] = file_name
+        file_path = os.path.join(dir, file_name)
+
+        if os.path.isfile(file_path):
+            size = os.path.getsize(file_path)
+            time = os.path.getmtime(file_path)
+            timestamp = datetime.datetime.fromtimestamp(time)
+            formatted_date = timestamp.strftime("%Y-%m-%d %H:%M:%S")
+
+            file_info["size"] = size
+            file_info["timestamp"] = formatted_date
+
+            response.append(file_info)
+
+    print(f'The response is : {response}')
+    publish_response(ch, method, properties, response)
+
+def publish_response(ch, method, properties, response):
+    channel.basic_publish(
+        exchange='',
+        routing_key=properties.reply_to,
+        properties=pika.BasicProperties(
+            correlation_id=properties.correlation_id,
+        ),
+        body=json.dumps(response)
+    )
+
+    ch.basic_ack(delivery_tag=method.delivery_tag)
+
+
+def on_message_callback(ch, method, properties, body):
+    routing_key = method.routing_key
+
+    if routing_key == "list":
+        process_files_callback(ch, method, properties, body)
+    elif routing_key == "find":
+        other_callback(ch, method, properties, body)
+    else:
+        print(f'Unknown routing key: {routing_key}')
     
-channel.basic_consume(queue="my_app", on_message_callback=callback, auto_ack=True)
+channel.basic_consume(queue="my_app", on_message_callback=on_message_callback, auto_ack=False)
 channel.start_consuming()
