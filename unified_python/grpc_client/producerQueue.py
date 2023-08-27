@@ -5,15 +5,14 @@ import uuid
 
 load_dotenv()
 RMQ_HOST = os.getenv('RMQ_HOST')
-RMQ_PORT = int(os.getenv('RMQ_PORT'))  # Convertimos a int ya que los puertos son números enteros
+RMQ_PORT = int(os.getenv('RMQ_PORT'))
 RMQ_USER = os.getenv('RMQ_USER')
 RMQ_PASS = os.getenv('RMQ_PASS')
 RMQ_EXCHANGE = os.getenv('RMQ_EXCHANGE')
-RMQ_QUEUE = os.getenv('RMQ_QUEUE')
 
 class AMQPRpcClient(object):
 
-    def __init__(self):
+    def __init__(self, function):
         self.connection = pika.BlockingConnection(
             pika.ConnectionParameters(
                 host=RMQ_HOST, 
@@ -34,6 +33,7 @@ class AMQPRpcClient(object):
 
         self.response = None
         self.corr_id = None
+        self.function = function
 
     def on_response(self, ch, method, props, body):
         if self.corr_id == props.correlation_id:
@@ -44,7 +44,7 @@ class AMQPRpcClient(object):
         self.corr_id = str(uuid.uuid4())
         self.channel.basic_publish(
             exchange=RMQ_EXCHANGE,
-            routing_key=RMQ_QUEUE,
+            routing_key=self.function,
             properties=pika.BasicProperties(
                 reply_to=self.callback_queue,
                 correlation_id=self.corr_id,
@@ -53,7 +53,7 @@ class AMQPRpcClient(object):
         self.connection.process_data_events()
         return self.response
 
-def RunAMQP(body):
-    rpc_client = AMQPRpcClient()
+def RunAMQP(body, function=""):
+    rpc_client = AMQPRpcClient(function)
     response = rpc_client.call(body)
     return response

@@ -4,6 +4,7 @@
 
 import json
 import pika
+import glob
 import os
 import datetime
 from dotenv import load_dotenv
@@ -38,29 +39,30 @@ def list_files(ch, method, properties, body):
 
             response.append(file_info)
 
-    print(f'The response is : {response}')
+    print(f'The response in LIST is : {response}')
     publish_response(ch, method, properties, response)
 
 def find_files(ch, method, properties, body):
     response = []
 
-    for file_name in os.listdir(dir):
+    search = body.encode('UTF8')
+    for filename in glob.glob(f"{dir}/{search}"):
         file_info = {}
-        file_info["name"] = file_name
-        file_path = os.path.join(dir, file_name)
+        file_info["name"] = filename
+        file_path = os.path.join(dir, filename)
 
         if os.path.isfile(file_path):
             size = os.path.getsize(file_path)
             time = os.path.getmtime(file_path)
             timestamp = datetime.datetime.fromtimestamp(time)
             formatted_date = timestamp.strftime("%Y-%m-%d %H:%M:%S")
-
+        
             file_info["size"] = size
             file_info["timestamp"] = formatted_date
 
             response.append(file_info)
 
-    print(f'The response is : {response}')
+    print(f'The response in FIND is : {response}')
     publish_response(ch, method, properties, response)
 
 def publish_response(ch, method, properties, response):
@@ -74,17 +76,7 @@ def publish_response(ch, method, properties, response):
     )
 
     ch.basic_ack(delivery_tag=method.delivery_tag)
-
-
-def on_message_callback(ch, method, properties, body):
-    routing_key = method.routing_key
-
-    if routing_key == "list":
-        process_files_callback(ch, method, properties, body)
-    elif routing_key == "find":
-        other_callback(ch, method, properties, body)
-    else:
-        print(f'Unknown routing key: {routing_key}')
     
-channel.basic_consume(queue="my_app", on_message_callback=on_message_callback, auto_ack=False)
+channel.basic_consume(queue="list_queue", on_message_callback=list_files, auto_ack=False)
+channel.basic_consume(queue="find_queue", on_message_callback=find_files, auto_ack=False)
 channel.start_consuming()
