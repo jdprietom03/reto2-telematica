@@ -1,7 +1,3 @@
-# https://medium.com/better-programming/introduction-to-message-queue-with-rabbitmq-python-639e397cb668
-# consumer.py
-# Consume RabbitMQ queue
-
 import json
 import pika
 import glob
