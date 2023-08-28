@@ -1,11 +1,8 @@
 from concurrent import futures
-import os
-import datetime
 import grpc
 import protobufs.python.FileServices_pb2 as FileServices_pb2
 import protobufs.python.FileServices_pb2_grpc as FileServices_pb2_grpc
-import glob
-from server import ASSETS_DIR
+from common.services import listFiles, findFiles
 
 HOST = '[::]:50051'
 
@@ -13,51 +10,27 @@ class FileService(FileServices_pb2_grpc.FileServicesServicer):
 
     def ListFiles(self, request, context):
         print("Request is received: " + str(request))
+        response = []
 
-        files_info = []
+        for f in listFiles():
+            fileInfo = FileServices_pb2.FileInfo(name=f.file_name,
+                                                size=f.size,
+                                                timestamp=f.formatted_date)
+            response.append(fileInfo)
 
-        for file_name in os.listdir(ASSETS_DIR):
-            file_path = os.path.join(ASSETS_DIR, file_name)
-
-            if os.path.isfile(file_path):
-                size = os.path.getsize(file_path)
-                time = os.path.getmtime(file_path)
-                timestamp = datetime.datetime.fromtimestamp(time)
-                formatted_date = timestamp.strftime("%Y-%m-%d %H:%M:%S")
-
-                file_info = FileServices_pb2.FileInfo(
-                    name=file_name, size=size, timestamp=formatted_date)
-
-                files_info.append(file_info)
-
-        return FileServices_pb2.ListFilesResponse(file_info=files_info)
+        return FileServices_pb2.ListFilesResponse(file_info=response)
 
     def FindFile(self, request, context):
         print("Request Find Files is received: " + str(request))
-
-        files_info = []
-        search = request.file_name
-
-        for filename in glob.glob(f"{ASSETS_DIR}/{search}"):
-            file_path = os.path.join(ASSETS_DIR, filename)
-            size = os.path.getsize(file_path)
-            time = os.path.getmtime(file_path)
-            timestamp = datetime.datetime.fromtimestamp(time)
-            formatted_date = timestamp.strftime("%Y-%m-%d %H:%M:%S")
+        response = []
         
-            file_info = FileServices_pb2.FileInfo(
-                name = os.path.basename(file_path),
-                size = size,
-                timestamp = formatted_date
-            )  
+        for f in findFiles(request.file_name):
+            fileInfo = FileServices_pb2.FileInfo(name=f.file_name,
+                                                size=f.size,
+                                                timestamp=f.formatted_date)
+            response.append(fileInfo)
 
-            files_info.append(file_info)
-
-
-        response = FileServices_pb2.FindFileResponse(files_info=files_info)
-
-        return response
-
+        return FileServices_pb2.FindFileResponse(files_info=response)
 
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
