@@ -2,8 +2,8 @@ from concurrent import futures
 import os
 import datetime
 import grpc
-import FileServices_pb2 as FileServices_pb2
-import FileServices_pb2_grpc as FileServices_pb2_grpc
+import protobufs.python.FileServices_pb2 as FileServices_pb2
+import protobufs.python.FileServices_pb2_grpc as FileServices_pb2_grpc
 import glob
 
 HOST = '[::]:50051'
