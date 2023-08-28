@@ -1,9 +1,7 @@
 import json
 import pika
-import glob
 import os
-import datetime
-from server import ASSETS_DIR
+from common.services import Service
 
 RMQ_HOST = os.getenv('RMQ_HOST')
 RMQ_PORT = os.getenv('RMQ_PORT')
@@ -14,44 +12,12 @@ connection = pika.BlockingConnection(pika.ConnectionParameters(RMQ_HOST, RMQ_POR
 channel = connection.channel()
 
 def list_files(ch, method, properties, body):
-    response = []
-
-    for file_name in os.listdir(ASSETS_DIR):
-        file_info = {}
-        file_info["name"] = file_name
-        file_path = os.path.join(ASSETS_DIR, file_name)
-
-        if os.path.isfile(file_path):
-            size = os.path.getsize(file_path)
-            time = os.path.getmtime(file_path)
-            timestamp = datetime.datetime.fromtimestamp(time)
-            formatted_date = timestamp.strftime("%Y-%m-%d %H:%M:%S")
-
-            file_info["size"] = size
-            file_info["timestamp"] = formatted_date
-
-            response.append(file_info)
-
+    response = Service.listFiles()
     print(f'The response in LIST is : {response}')
     publish_response(ch, method, properties, response)
 
 def find_files(ch, method, properties, body):
-    response = []
-
-    search = body.decode('utf-8')
-    for filename in glob.glob(f"{ASSETS_DIR}/{search}"):
-        file_info = {}
-        file_info["name"] = os.path.basename(filename)
-        size = os.path.getsize(filename)
-        time = os.path.getmtime(filename)
-        timestamp = datetime.datetime.fromtimestamp(time)
-        formatted_date = timestamp.strftime("%Y-%m-%d %H:%M:%S")
-    
-        file_info["size"] = size
-        file_info["timestamp"] = formatted_date
-
-        response.append(file_info)
-
+    response = Service.findFiles(body.decode('utf-8'))
     print(f'The response in FIND is : {response}')
     publish_response(ch, method, properties, response)
 

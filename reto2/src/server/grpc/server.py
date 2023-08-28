@@ -2,7 +2,7 @@ from concurrent import futures
 import grpc
 import protobufs.python.FileServices_pb2 as FileServices_pb2
 import protobufs.python.FileServices_pb2_grpc as FileServices_pb2_grpc
-from common.services import listFiles, findFiles
+from common.services import Service
 
 HOST = '[::]:50051'
 
@@ -12,7 +12,7 @@ class FileService(FileServices_pb2_grpc.FileServicesServicer):
         print("Request is received: " + str(request))
         response = []
 
-        for f in listFiles():
+        for f in Service.listFiles():
             fileInfo = FileServices_pb2.FileInfo(name=f.file_name,
                                                 size=f.size,
                                                 timestamp=f.formatted_date)
@@ -24,7 +24,7 @@ class FileService(FileServices_pb2_grpc.FileServicesServicer):
         print("Request Find Files is received: " + str(request))
         response = []
         
-        for f in findFiles(request.file_name):
+        for f in Service.findFiles(request.file_name):
             fileInfo = FileServices_pb2.FileInfo(name=f.file_name,
                                                 size=f.size,
                                                 timestamp=f.formatted_date)
