@@ -7,13 +7,12 @@ import pika
 import glob
 import os
 import datetime
+from server import ASSETS_DIR
 
 RMQ_HOST = os.getenv('RMQ_HOST')
 RMQ_PORT = os.getenv('RMQ_PORT')
 RMQ_USER = os.getenv('RMQ_USER')
 RMQ_PASS = os.getenv('RMQ_PASS')
-
-dir = "./../../../assets"
 
 connection = pika.BlockingConnection(pika.ConnectionParameters(RMQ_HOST, RMQ_PORT, '/', pika.PlainCredentials(RMQ_USER, RMQ_PASS)))
 channel = connection.channel()
@@ -21,10 +20,10 @@ channel = connection.channel()
 def list_files(ch, method, properties, body):
     response = []
 
-    for file_name in os.listdir(dir):
+    for file_name in os.listdir(ASSETS_DIR):
         file_info = {}
         file_info["name"] = file_name
-        file_path = os.path.join(dir, file_name)
+        file_path = os.path.join(ASSETS_DIR, file_name)
 
         if os.path.isfile(file_path):
             size = os.path.getsize(file_path)
@@ -44,7 +43,7 @@ def find_files(ch, method, properties, body):
     response = []
 
     search = body.decode('utf-8')
-    for filename in glob.glob(f"{dir}/{search}"):
+    for filename in glob.glob(f"{ASSETS_DIR}/{search}"):
         file_info = {}
         file_info["name"] = os.path.basename(filename)
         size = os.path.getsize(filename)

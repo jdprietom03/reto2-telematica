@@ -5,10 +5,9 @@ import grpc
 import protobufs.python.FileServices_pb2 as FileServices_pb2
 import protobufs.python.FileServices_pb2_grpc as FileServices_pb2_grpc
 import glob
+from server import ASSETS_DIR
 
 HOST = '[::]:50051'
-
-dir = "./../../../assets"
 
 class FileService(FileServices_pb2_grpc.FileServicesServicer):
 
@@ -17,8 +16,8 @@ class FileService(FileServices_pb2_grpc.FileServicesServicer):
 
         files_info = []
 
-        for file_name in os.listdir(dir):
-            file_path = os.path.join(dir, file_name)
+        for file_name in os.listdir(ASSETS_DIR):
+            file_path = os.path.join(ASSETS_DIR, file_name)
 
             if os.path.isfile(file_path):
                 size = os.path.getsize(file_path)
@@ -39,8 +38,8 @@ class FileService(FileServices_pb2_grpc.FileServicesServicer):
         files_info = []
         search = request.file_name
 
-        for filename in glob.glob(f"{dir}/{search}"):
-            file_path = os.path.join(dir, filename)
+        for filename in glob.glob(f"{ASSETS_DIR}/{search}"):
+            file_path = os.path.join(ASSETS_DIR, filename)
             size = os.path.getsize(file_path)
             time = os.path.getmtime(file_path)
             timestamp = datetime.datetime.fromtimestamp(time)
