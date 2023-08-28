@@ -7,9 +7,7 @@ import pika
 import glob
 import os
 import datetime
-from dotenv import load_dotenv
 
-load_dotenv()
 RMQ_HOST = os.getenv('RMQ_HOST')
 RMQ_PORT = os.getenv('RMQ_PORT')
 RMQ_USER = os.getenv('RMQ_USER')
@@ -78,6 +76,8 @@ def publish_response(ch, method, properties, response):
     ch.basic_ack(delivery_tag=method.delivery_tag)
     print("Response sent to RabbitMQ!")
     
-channel.basic_consume(queue="list_queue", on_message_callback=list_files, auto_ack=False)
-channel.basic_consume(queue="find_queue", on_message_callback=find_files, auto_ack=False)
-channel.start_consuming()
+
+def run():
+    channel.basic_consume(queue="list_queue", on_message_callback=list_files, auto_ack=False)
+    channel.basic_consume(queue="find_queue", on_message_callback=find_files, auto_ack=False)
+    channel.start_consuming()
