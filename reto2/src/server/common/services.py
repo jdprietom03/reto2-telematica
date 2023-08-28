@@ -5,7 +5,7 @@ from server import ASSETS_DIR
 
 class FileServices:
 
-    def listFiles():
+    def listFiles(self):
         collection = []
         for filename in os.listdir(ASSETS_DIR):
             file_info = {}
@@ -23,7 +23,7 @@ class FileServices:
                 collection.append(file_info)
         return collection
 
-    def findFiles(search: str) -> list:
+    def findFiles(self, search: str) -> list:
         collection = []
         for filename in glob.glob(f"{ASSETS_DIR}/{search}"):
             file_info = {}
