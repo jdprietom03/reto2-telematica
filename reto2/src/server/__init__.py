@@ -6,9 +6,8 @@ import configparser
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 # Configuración inicial
-base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 config = configparser.ConfigParser()
-config.read(os.path.join(base_dir, '.config'))
+config.read(os.path.join(os.path.dirname(__file__), '..', 'config', '.config'))
 
-# Obtiene la ruta de ASSETS_DIR y la convierte en una ruta absoluta
-ASSETS_DIR = os.path.join(base_dir, config['PATHS']['ASSETS_DIR'])
+# Obtiene la ruta de ASSETS_DIR
+ASSETS_DIR = config['PATHS']['ASSETS_DIR']
