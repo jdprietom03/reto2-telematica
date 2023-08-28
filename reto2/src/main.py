@@ -1,9 +1,4 @@
 import argparse
-import os
-from dotenv import load_dotenv
-
-# Carga las variables de entorno desde .env
-load_dotenv()
 
 # Configura el parser de argumentos
 parser = argparse.ArgumentParser(
